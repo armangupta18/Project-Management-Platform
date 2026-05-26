@@ -1,10 +1,8 @@
 {
   "name": "projmanagement",
   "version": "1.0.0",
-  "description": "a project management application for beginners",
+  "description": "a project management system",
   "keywords": [
-    "udemy",
-    "course",
     "backed",
     "API",
     "creation"

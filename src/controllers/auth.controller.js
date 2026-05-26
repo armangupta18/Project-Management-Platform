@@ -12,9 +12,9 @@ import crypto from "node:crypto";
 
 const generateAccessAndRefreshTokens = async (userId) => {
   try {
-    //first find  that user by usedId and then them as user.
+    //first find that user by userId and then them as user.
     //In bigger User we cannot access token method
-    //In user this does 2 job -> get access of  method as well as it verify that userID exist in database or not.
+    //In user, it does 2 job -> get access of method as well as it verify that userID exist in database or not.
 
     const user = await User.findById(userId);
 
@@ -55,6 +55,7 @@ const registerUser = asyncHandler(async (req, res) => {
   const { unHashedToken, hashedToken, tokenExpiry } =
     user.generateTemporaryToken();
 
+  //save
   user.emailVerificationToken = hashedToken;
   user.emailVerificationExpiry = tokenExpiry;
 
@@ -96,11 +97,10 @@ const registerUser = asyncHandler(async (req, res) => {
 const login = asyncHandler(async (req, res) => {
   const { email, password, username } = req.body;
 
-  if (!email) {
-    throw new ApiError(400, "Username or email is required");
-  }
 
-  const user = await User.findOne({ email });
+  const user = await User.findOne({
+    $or: [{ email }, { username }]
+  });
 
   if (!user) {
     throw new ApiError(400, " User does not exists");
@@ -120,7 +120,7 @@ const login = asyncHandler(async (req, res) => {
   );
 
   const options = {
-    httpOnly: true,
+    httpOnly: true, //JS Cannot access cookies
     secure: process.env.NODE_ENV === "production",
     sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
   };
@@ -143,6 +143,7 @@ const login = asyncHandler(async (req, res) => {
 });
 
 const logoutUser = asyncHandler(async (req, res) => {
+  // Remove refresh token from DB
   await User.findByIdAndUpdate(
     req.user._id,
     {
@@ -154,28 +155,49 @@ const logoutUser = asyncHandler(async (req, res) => {
       new: true,
     },
   );
+
+  // Cookie options (match login options)
   const options = {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
   };
 
+  // Clear cookies
   return res
     .status(200)
     .clearCookie("accessToken", options)
     .clearCookie("refreshToken", options)
-    .json(new ApiResponse(200, {}, "User logged out"));
+    .json(
+      new ApiResponse(
+        200,
+        {
+          user: { 
+            _id: req.user._id,
+            username: req.user.username,
+            email: req.user.email,
+          }
+        },
+        `${req.user.username} logged out successfully`
+      )
+    );
 });
 
 const getCurrentUser = asyncHandler(async (req, res) => {
   //since request has user access therefore directly return this
   return res
     .status(200)
-    .json(new ApiResponse(200, req.user, "Current user feteched successfully"));
+    .json(
+      new ApiResponse(
+        200,
+        req.user,
+        "Current user feteched successfully"
+      )
+    );
 });
 
 const verifyEmail = asyncHandler(async (req, res) => {
-  //S1 -> Collect the data as we have res.body same as we have res.params that directly provides the url itself
+  //S1 -> Collect the data as we have req.body same as we have req.params that directly provides the url itself
 
   //In Express, req.params is an object that contains route parameters.
   const { verificationToken } = req.params;
@@ -220,14 +242,17 @@ const verifyEmail = asyncHandler(async (req, res) => {
 });
 
 const resendEmailVerification = asyncHandler(async (req, res) => {
+
   //resend can done only if user are login already
   const user = await User.findById(req.user?._id);
   if (!user) {
     throw new ApiError(404, "User does not exist");
   }
+
   if (user.isEmailVerified) {
     throw new ApiError(404, "Email is already verified");
   }
+
   //follow process to send mail
   //here we r resending mail
   //First regenerate hashToken
@@ -251,7 +276,13 @@ const resendEmailVerification = asyncHandler(async (req, res) => {
 
   return res
     .status(200)
-    .json(new ApiResponse(202, {}, "Mail Has been sent to your email ID"));
+    .json(
+      new ApiResponse(
+        202,
+        {},
+        "Mail Has been sent to your email ID"
+      )
+    );
 });
 
 const refreshAccessToken = asyncHandler(async (req, res) => {
@@ -291,7 +322,7 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
     //update refreshToken
     user.refreshToken = newRefreshToken;
     await user.save();
-
+    
     return res
       .status(200)
       .cookie("accessToken", accessToken, options)
@@ -388,7 +419,7 @@ const changeCurrentPassword = asyncHandler(async (req, res) => {
   //check user exist or not
   const user = await User.findById(req.user?._id)
   
-  //check entere oldPassword is correct or not
+  //check enter oldPassword is correct or not
   const isPasswordValid = await user.isPasswordCorrect(oldPassword)
 
   if (!isPasswordValid) {

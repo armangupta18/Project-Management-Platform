@@ -6,6 +6,8 @@ import jwt from "jsonwebtoken"
 import mongoose from "mongoose";
 
 export const verifyJWT = asyncHandler(async (req, res, next) => {
+
+    //get token from cookies(web Browser) OR header(Mobile)
     const token = req.cookies?.accessToken || req.header("Authorization")?.replace("Bearer ", "")
     
     if (!token) {
@@ -13,15 +15,19 @@ export const verifyJWT = asyncHandler(async (req, res, next) => {
     }
 
     try {
-        const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET)
-        const user = await User.findById(decodedToken?._id).select(
-            "-password -refreshToken -emailVerifactionToken -emailVerificationExpiry",
-        );
-        if (!user) {
-          throw new ApiError(401, "Invalid access Token");
-        }
-        req.user = user;
-        next() //move to controller or next middleware
+      // S2: Verify & decode token
+      const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+      // S3: Find user from decoded token
+      const user = await User.findById(decodedToken?._id).select(
+        "-password -refreshToken -emailVerifactionToken -emailVerificationExpiry",
+      );
+      if (!user) {
+        throw new ApiError(401, "Invalid access Token");
+      }
+
+      // S4: Inject user into request
+      req.user = user;
+      next(); //move to controller or next middleware
     } catch (error) {
         throw new ApiError(401, "Invalid access Token");
     }

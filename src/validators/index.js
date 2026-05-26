@@ -37,9 +37,23 @@ const userLoginValidator = () => {
       .isEmail()
       .withMessage("Email is invalid"),
     
+    body("username")
+      .optional()
+      .notEmpty()
+      .withMessage("Username is required"),
+    
+    //custom validator is both are not present
+    body().custom((value) => {
+      if (!value.email && !value.username) {
+          throw new Error("Email or username is required");
+      }
+      return true;
+    }),
+    
     body("password")
       .notEmpty()
       .withMessage("Password is required"),
+    
   ]
 }
 

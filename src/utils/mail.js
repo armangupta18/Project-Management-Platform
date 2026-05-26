@@ -86,6 +86,8 @@ import Mailgen from "mailgen";
 import nodemailer from "nodemailer";
 
 const sendEmail = async (options) => {
+  
+  //create mailgen instance
   const mailGenerator = new Mailgen({
     theme: "default",
     product: {
@@ -94,9 +96,11 @@ const sendEmail = async (options) => {
     },
   });
 
+  //Generate email content
   const emailTextual = mailGenerator.generatePlaintext(options.mailgenContent);
   const emailHtml = mailGenerator.generate(options.mailgenContent);
 
+  //Create transporter
   const transporter = nodemailer.createTransport({
     host: process.env.MAILTRAP_SMTP_HOST,
     port: process.env.MAILTRAP_SMTP_PORT,
@@ -106,6 +110,7 @@ const sendEmail = async (options) => {
     },
   });
 
+  //send mail
   const mail = {
     from: '"Task Manager" <no-reply@taskmanager.com>',
     to: options.email,

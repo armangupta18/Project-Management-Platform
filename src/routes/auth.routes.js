@@ -10,7 +10,7 @@ const router = Router();
 
 //router.route("/register") - request has reached route now waiting to reach registerUser there we will process it 
 
-//--->>>unsecured route
+//-->>unsecured route
 //register
 router
     .route("/register")

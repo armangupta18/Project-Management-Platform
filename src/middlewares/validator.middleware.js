@@ -5,10 +5,12 @@ import { ApiError } from "../utils/api-error.js";
 
 export const validate = (req, res, next) => {
     const errors = validationResult(req);
+
+    //If no validation errors -> continue
     if (errors.isEmpty()) {
         return next();
     }
-    //not empty therefore extract that error and throw error.
+    //Not empty therefore extract that error and throw error.
     const extractedErrors = [];
     //pushing object 
     errors.array().map((err) => extractedErrors.push({
