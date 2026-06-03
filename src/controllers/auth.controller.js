@@ -348,7 +348,7 @@ const forgotPasswordRequest = asyncHandler(async (req, res) => {
   }
 
   const { unHashedToken, hashedToken, tokenExpiry } =
-    user.generateTemporaryToken;
+    user.generateTemporaryToken();
 
   user.forgotPasswordToken = hashedToken;
   user.forgotpasswordExpiry = tokenExpiry;
@@ -390,16 +390,14 @@ const resetForgotPassword = asyncHandler(async (req, res) => {
   })
   
   if (!user) {
-    throw new ApiResponse(
-      489,"Token is valid or expired"
-    )
+    throw new ApiError(400, "Token is invalid or expired");
   }
 
   user.forgotpasswordExpiry = undefined
   user.forgotPasswordToken = undefined
 
   user.password = newPassword
-  await user.save({ validateBeforeSave: false })
+  await user.save();
   
   return res
     .status(200)

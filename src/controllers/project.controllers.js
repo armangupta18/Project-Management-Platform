@@ -48,7 +48,7 @@ const getProjects = asyncHandler(async (req, res) => {
           //add how many field are there ie. count members
             $addFields: {
               members: {
-                $size: "$projectmembers",
+                $size: "$projectMembers",
               },
             },
           },
@@ -175,7 +175,7 @@ const addMembersToProjects = asyncHandler(async (req, res) => {
     // }
 
 
-    await ProjectMember.findByIdAndUpdate(
+    await ProjectMember.findOneAndUpdate(
     //finding same user
         {
             user: new mongoose.Types.ObjectId(user._id),
