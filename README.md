@@ -1,11 +1,5 @@
-For placement/interview purposes, your README should look like a professional open-source backend project README, not just installation steps.
-
-Use this structure:
-
-# README Structure
-
 ```md
-# Project Management System
+# Project Management Platform
 
 A scalable backend API for project and task management built using Node.js, Express.js, MongoDB, JWT Authentication, and Role-Based Authorization.
 
