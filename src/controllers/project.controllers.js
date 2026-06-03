@@ -7,7 +7,7 @@ import { asyncHandler } from "../utils/async-handler.js";
 import mongoose from "mongoose";
 import { AvailableUserRoles, UserRoleEnum } from "../utils/constants.js";
 //import { pipeline } from "nodemailer/lib/xoauth2/index.js";
-//Optioanl to increase functionality
+//Optional to increase functionality
 // import {
 //   emailVerificationMailgenContent,
 //   forgotPasswordMailgenContent,
@@ -45,7 +45,7 @@ const getProjects = asyncHandler(async (req, res) => {
             },
           },
           {
-            //add how many field are there ie. count members
+          //add how many field are there ie. count members
             $addFields: {
               members: {
                 $size: "$projectmembers",
@@ -77,7 +77,13 @@ const getProjects = asyncHandler(async (req, res) => {
 
   return res
     .status(200)
-    .json(new ApiResponse(200, projects, "Projects fetched successfully"));
+    .json(
+      new ApiResponse(
+        200, 
+        projects,
+        "Projects fetched successfully"
+      )
+    );
 });
 
 const getProjectById = asyncHandler(async (req, res) => {
@@ -91,8 +97,13 @@ const getProjectById = asyncHandler(async (req, res) => {
     }
 
     return res
-        .status(200)
-        .json(new ApiResponse(200, project, "Project fetched successfully"));    
+      .status(200)
+      .json(
+        new ApiResponse(
+          200, project,
+          "Project fetched successfully"
+        )
+      );    
 });
 
 const createProject = asyncHandler(async (req, res) => {
@@ -182,8 +193,14 @@ const addMembersToProjects = asyncHandler(async (req, res) => {
         }
     )
     return res
-        .status(201)
-        .json(new ApiResponse(201, {}, "Project member added successfully"));
+      .status(201)
+      .json(
+        new ApiResponse(
+          201,
+          {},
+          "Project member added successfully"
+        )
+      );
 });
 
 const getProjectMembers = asyncHandler(async (req, res) => {

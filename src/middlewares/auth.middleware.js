@@ -41,13 +41,14 @@ export const validateProjectPermission = (roles = []) => {
          
         if (!projectId)
             throw new ApiError(400, "Project is missing ");
-        //if present then we want too look into project member because it is one thing that actaully talk to user ans project 
+        //if present then we want too look into project member because it is one thing that actually talk to user ans project 
         const project = await ProjectMember.findOne({
             project: new mongoose.Types.ObjectId(projectId),
             user: new mongoose.Types.ObjectId(req.user._id)
         })
 
-        if (!project) throw new ApiError(400, "Project not found ");
+        if (!project)
+            throw new ApiError(400, "Project not found ");
 //this role i am picking from database because we cannot trust on user so we match role with help of userId and projectId
         const givenRole = project?.role
         req.user.role = givenRole

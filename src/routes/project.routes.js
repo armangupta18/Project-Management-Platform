@@ -1,4 +1,5 @@
 import { Router } from "express";
+
 import {
   addMembersToProjects,
   createProject,
@@ -10,7 +11,9 @@ import {
   deleteProjects,
   updateMemberRole,
 } from "../controllers/project.controllers.js";
+
 import { validate } from "../middlewares/validator.middleware.js";
+
 import {
   createProjectValidator,
   addMembertoProjectValidator,
@@ -20,6 +23,7 @@ import {
   verifyJWT,
   validateProjectPermission,
 } from "../middlewares/auth.middleware.js";
+
 import {
   AvailableTaskStatuses,
   AvailableUserRoles, UserRoleEnum
