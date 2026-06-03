@@ -1,7 +1,15 @@
+For placement/interview purposes, your README should look like a professional open-source backend project README, not just installation steps.
+
+Use this structure:
+
+# README Structure
+
+```md
 # Project Management System
 
-A scalable backend API for project and task management built using Node.js, Express.js, MongoDB, JWT Authentication, 
-and Role-Based Authorization.
+A scalable backend API for project and task management built using Node.js, Express.js, MongoDB, JWT Authentication, and Role-Based Authorization.
+
+---
 
 ## Features
 
@@ -58,6 +66,8 @@ and Role-Based Authorization.
 
 ## Project Architecture
 
+```
+
 Client
 |
 v
@@ -74,9 +84,13 @@ Models
 |
 MongoDB
 
+```
+
 ---
 
 ## Folder Structure
+
+```
 
 src/
 │
@@ -113,9 +127,13 @@ src/
 │
 └── constants/
 
+```
+
 ---
 
 ## Authentication Flow
+
+```
 
 Register
 ↓
@@ -131,6 +149,9 @@ Refresh Token
 ↓
 New Access Token
 
+````
+
+---
 
 ## Database Design
 
@@ -219,7 +240,7 @@ New Access Token
 
 Create a `.env` file:
 
-env
+```env
 PORT=8000
 
 MONGODB_URI=
@@ -236,6 +257,7 @@ MAILTRAP_SMTP_USER=
 MAILTRAP_SMTP_PASS=
 
 CORS_ORIGIN=
+````
 
 ---
 
@@ -351,3 +373,5 @@ Arman Gupta
 
 GitHub:
 [https://github.com/armangupta18](https://github.com/armangupta18)
+These three sections make the README look like a production-level backend project rather than a college project.
+```
